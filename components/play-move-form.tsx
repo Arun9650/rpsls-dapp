@@ -138,7 +138,7 @@ export function PlayMoveForm({ account }: PlayMoveFormProps) {
 			// 	return;
 			// }
 
-			const { move: yourMove, salt } = gameData;
+			const {  salt } = gameData;
 
 			// Call the solve function on the contract
 			// const salt = '69349484593542972304635356719251858778965769238419088392771497576324667704853'
