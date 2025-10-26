@@ -338,7 +338,7 @@ export function TimeoutClaimForm({ account }: TimeoutClaimFormProps) {
 			<Card className="border-purple-500/30 bg-purple-500/10 p-4">
 				<p className="text-sm text-purple-300">
 					<span className="font-semibold">Timeout Mechanism:</span> If your
-					opponent doesn't respond within 1 hour, you can claim their stake.
+					opponent doesn't respond within 5 min, you can claim their stake.
 					This protects you from abandoned games.
 				</p>
 			</Card>
