@@ -101,7 +101,7 @@ export function TimeoutClaimForm({ account }: TimeoutClaimFormProps) {
 
 	// Update time remaining every second
 	useEffect(() => {
-		if (!gameInfo) return;
+		if (!gameInfo || !address) return;
 
 		const interval = setInterval(() => {
 			const currentTime = Math.floor(Date.now() / 1000);
@@ -110,13 +110,28 @@ export function TimeoutClaimForm({ account }: TimeoutClaimFormProps) {
 			const remaining = Math.max(0, timeoutSeconds - elapsed);
 			setTimeRemaining(remaining);
 
-			if (remaining <= 0) {
-				setGameInfo((prev) => (prev ? { ...prev, timeRemaining: 0 } : null));
+			// Update gameInfo when timeout is reached
+			if (remaining <= 0 && !gameInfo.canPlayerClaim) {
+				const isPlayer1 =
+					gameInfo.player1.toLowerCase() === address.toLowerCase();
+				const isPlayer2 =
+					gameInfo.player2.toLowerCase() === address.toLowerCase();
+				const canPlayerClaim = isPlayer1 || isPlayer2;
+
+				setGameInfo((prev) =>
+					prev
+						? {
+								...prev,
+								timeRemaining: 0,
+								canPlayerClaim,
+						  }
+						: null
+				);
 			}
 		}, 1000);
 
 		return () => clearInterval(interval);
-	}, [gameInfo, timeoutData]);
+	}, [gameInfo, timeoutData, address]);
 
 	const handleFetchGameInfo = async () => {
 		setError(null);
@@ -338,8 +353,8 @@ export function TimeoutClaimForm({ account }: TimeoutClaimFormProps) {
 			<Card className="border-purple-500/30 bg-purple-500/10 p-4">
 				<p className="text-sm text-purple-300">
 					<span className="font-semibold">Timeout Mechanism:</span> If your
-					opponent doesn't respond within 5 min, you can claim their stake.
-					This protects you from abandoned games.
+					opponent doesn't respond within 5 min, you can claim their stake. This
+					protects you from abandoned games.
 				</p>
 			</Card>
 
@@ -386,8 +401,8 @@ export function TimeoutClaimForm({ account }: TimeoutClaimFormProps) {
 					disabled={isLoading || !canClaim}
 					className={`flex-1 ${
 						canClaim
-							? 'bg-linear-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700'
-							: 'bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 opacity-50'
+							? 'bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700'
+							: 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 opacity-50'
 					}`}
 				>
 					{isLoading ? 'Claiming...' : 'Claim Timeout'}
