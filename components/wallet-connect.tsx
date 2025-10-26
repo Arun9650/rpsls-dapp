@@ -29,7 +29,7 @@ export function WalletConnect({
 					onClick={handleDisconnect}
 					variant="outline"
 					size="sm"
-					className="border-purple-500/30 text-purple-300 hover:bg-purple-500/10 bg-transparent"
+					className="border-purple-500/30 text-purple-300  hover:bg-purple-500/10 hover:text-purple-300 bg-transparent"
 				>
 					Disconnect
 				</Button>

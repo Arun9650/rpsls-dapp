@@ -56,6 +56,9 @@ export function CreateGameForm({ account }: CreateGameFormProps) {
 	const [hasherTxHash, setHasherTxHash] = useState<string | null>(null);
 	const [rpsTxHash, setRpsTxHash] = useState<string | null>(null);
 
+	// Add this state for copy feedback
+	const [copiedAddress, setCopiedAddress] = useState(false);
+
 	const { data: hash, isPending: isWritePending } = useWriteContract();
 
 	const { isLoading: isConfirming, isSuccess: isConfirmed } =
@@ -358,6 +361,23 @@ export function CreateGameForm({ account }: CreateGameFormProps) {
 		// The contract address would come from the transaction receipt
 	}
 
+	// Add this function to handle copying
+	const handleCopyAddress = async (address: string) => {
+		try {
+			await navigator.clipboard.writeText(address);
+			setCopiedAddress(true);
+			toast.success('Contract address copied to clipboard!');
+
+			// Reset the copied state after 2 seconds
+			setTimeout(() => {
+				setCopiedAddress(false);
+			}, 2000);
+		} catch (err) {
+			console.error('Failed to copy address:', err);
+			toast.error('Failed to copy address');
+		}
+	};
+
 	return (
 		<div className="space-y-6">
 			{/* Loading Progress Card */}
@@ -556,10 +576,22 @@ export function CreateGameForm({ account }: CreateGameFormProps) {
 							Game Created Successfully!
 						</p>
 						<div className="space-y-1 text-xs text-green-200">
-							<p>
-								<span className="font-medium">Contract Address:</span>{' '}
-								{gameCreated.contractAddress}
-							</p>
+							<div className="flex items-center justify-between">
+								<div className="flex-1">
+									<span className="font-medium">Contract Address:</span>{' '}
+									<span className="break-all">
+										{gameCreated.contractAddress}
+										<button
+									onClick={() => handleCopyAddress(gameCreated.contractAddress)}
+									className="ml-2 rounded p-1 text-green-400 hover:bg-green-500/20 hover:text-green-300 transition-colors"
+									title="Copy address"
+								>
+									{copiedAddress ? '✅' : '📋'}
+								</button>
+									</span>
+								</div>
+								
+							</div>
 							<p>
 								<span className="font-medium">Your Move:</span>{' '}
 								{selectedMove !== null ? MOVE_NAMES[selectedMove] : ''}{' '}
